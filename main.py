@@ -1,5 +1,4 @@
-
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -9,9 +8,9 @@ class BuildAgentRequest(BaseModel):
 
 @app.post("/agent/build")
 async def build_agent(request: BuildAgentRequest):
-    # Do whatever you want with request.feature
+    # This echoes the feature you send from Swagger UI
     return {"message": f"Received: {request.feature}"}
 
 @app.get("/")
 async def root():
-    return {"message": "Dev Agent is running!"}
+    return {"status": "Dev Agent API Running"}
