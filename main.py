@@ -1,24 +1,22 @@
+from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+
+# Allow CORS from your frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For dev only. For production, use your frontend domain
+    allow_origins=["*"],  # For dev, allow everything. For prod, use ["http://localhost:3000"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-from fastapi import FastAPI
-from pydantic import BaseModel
 
-app = FastAPI()
-
-class BuildAgentRequest(BaseModel):
-    feature: str
-
-@app.post("/agent/build")
-async def build_agent(request: BuildAgentRequest):
-    # This echoes the feature you send from Swagger UI
-    return {"message": f"Received: {request.feature}"}
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    contents = await file.read()
+    # Optionally, save file or process contents here
+    return {"filename": file.filename, "size": len(contents)}
 
 @app.get("/")
 async def root():
