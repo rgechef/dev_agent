@@ -9,3 +9,20 @@ watchdog
 gitpython
 python-dotenv
 tenacity
+Jinja2
+black
+pytest
+sh
+setuptools
+rich
+typer
+psutil
+beautifulsoup4
+lxml
+orjson
+loguru
+starlette
+# If you want agent-style LLM or chat, also:
+openai
+# For code generation/execution:
+astunparse
