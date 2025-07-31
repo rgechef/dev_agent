@@ -22,7 +22,5 @@ lxml
 orjson
 loguru
 starlette
-# If you want agent-style LLM or chat, also:
-openai
-# For code generation/execution:
-astunparse
+openai           # <--- GPT integration
+astunparse       # <--- code generation
