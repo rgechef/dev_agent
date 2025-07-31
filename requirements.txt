@@ -1,2 +1,11 @@
 fastapi
 uvicorn
+python-multipart
+requests
+httpx
+pyyaml
+aiofiles
+watchdog
+gitpython
+python-dotenv
+tenacity
