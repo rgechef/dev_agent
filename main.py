@@ -41,7 +41,6 @@ def read_root():
     return {"status": "Dev Agent is running"}
 
 # === OpenAI Chat endpoint with Pydantic model for Swagger ===
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class ChatRequest(BaseModel):
     prompt: str
@@ -49,13 +48,3 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def chat(chat_request: ChatRequest):
     prompt = chat_request.prompt
-    if not prompt:
-        return {"error": "No prompt provided."}
-    try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Or "gpt-4o" if you have access
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return {"response": completion['choices'][0]['message']['content']}
-    except Exception as e:
-        return {"error": str(e)}
