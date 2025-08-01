@@ -1,7 +1,8 @@
 import os
 import requests
-from fastapi import FastAPI, BackgroundTasks, Request
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import openai
 
 app = FastAPI(
@@ -39,13 +40,15 @@ def test_ping(background_tasks: BackgroundTasks):
 def read_root():
     return {"status": "Dev Agent is running"}
 
-# === OpenAI Chat endpoint ===
+# === OpenAI Chat endpoint with Pydantic model for Swagger ===
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+class ChatRequest(BaseModel):
+    prompt: str
+
 @app.post("/chat")
-async def chat(request: Request):
-    data = await request.json()
-    prompt = data.get("prompt")
+async def chat(chat_request: ChatRequest):
+    prompt = chat_request.prompt
     if not prompt:
         return {"error": "No prompt provided."}
     try:
