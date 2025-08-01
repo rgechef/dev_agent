@@ -1,18 +1,19 @@
 import os
 import requests
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
+import openai
 
 app = FastAPI(
     title="Dev Agent",
-    description="Automated agent for backend tasks, Discord pings, and self-repair",
+    description="Automated agent for backend tasks, Discord pings, OpenAI chat, and self-repair",
     version="1.0.0"
 )
 
-# === CORS configuration (optional, but recommended) ===
+# === CORS configuration ===
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Lock this down for production!
+    allow_origins=["*"],  # For production, restrict to your frontend domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,3 +38,21 @@ def test_ping(background_tasks: BackgroundTasks):
 @app.get("/")
 def read_root():
     return {"status": "Dev Agent is running"}
+
+# === OpenAI Chat endpoint ===
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+@app.post("/chat")
+async def chat(request: Request):
+    data = await request.json()
+    prompt = data.get("prompt")
+    if not prompt:
+        return {"error": "No prompt provided."}
+    try:
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Or "gpt-4o" if you have access
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return {"response": completion['choices'][0]['message']['content']}
+    except Exception as e:
+        return {"error": str(e)}
